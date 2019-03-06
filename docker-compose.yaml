@@ -1,0 +1,55 @@
+version: "3"
+services:
+  optace-backend:
+    container_name: "optace-backend"
+    restart: always
+    environment:
+     - MONGODB=mongodb://optace-mongodb:27017
+    build: ./optace-backend
+    image: optace-backend
+    command: gunicorn main:app --bind 0.0.0.0:8081
+    ports:
+      - "8081:8081"
+    depends_on:
+     - optace-mongodb
+    links:
+     - optace-mongodb
+    networks:
+     - optace-net
+
+  optace-mongodb:
+    image: mongo
+    restart: always
+    container_name: "optace-mongodb"
+    #HOST:CONTAINER
+    volumes:
+     - mongodata:/data/db
+    command: mongod --logpath=/dev/null
+    ports:
+      - "27017:27017"
+    networks:
+      - optace-net
+
+  optace-nginx:
+    build: 
+       context: ./optace-nginx
+       dockerfile: Dockerfile
+    image: optace-nginx
+    container_name: "optace-nginx"
+    restart: always
+    ports:
+     - "80:8000"
+     - "443:8001"
+    depends_on:
+     - optace-backend
+     - optace-mongodb
+    links:
+     - optace-backend
+     - optace-mongodb
+    networks:
+     - optace-net
+
+volumes:
+  mongodata: {}
+networks:
+  optace-net:
