@@ -12,3 +12,5 @@ gen
 *.docx
 .DS_Store
 *.pyc
+
+tests/*
