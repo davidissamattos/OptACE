@@ -154,7 +154,7 @@ class BlackBoxCoordinator:
                 context.append(signals[key])
         except Exception as e:
             context = []
-            logger.warning('Error retriving the context or no context was provided')
+            logger.warning('Error retrieving the context or no context was provided')
             logger.warning(e)
 
 
